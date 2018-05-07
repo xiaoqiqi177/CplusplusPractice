@@ -8,55 +8,52 @@
 using namespace std;
 
 template <class T>
-class complex{
+class Complex{
         T real, image;
     public:
-        complex():real(T(0.)), image(T(0.)) {}
-        complex(T real_, T image_):real(real_), image(image_) {}
-        complex inverse() const{
+        Complex():real(T(0.)), image(T(0.)) {}
+        Complex(T real_, T image_):real(real_), image(image_) {}
+        Complex inverse() const{
             T norm = real * real + image * image;
             //assume norm can not be 0.
-            return complex(real / norm, -image / norm);
+            return Complex(real / norm, -image / norm);
         }
-        complex operator+(const complex &b){
-            return complex(real + b.real, image + b.image);
+        Complex operator+(const Complex &b){
+            return Complex(real + b.real, image + b.image);
         }
-        complex operator-(const complex &b){
-            return complex(real - b.real, image - b.image);
+        Complex operator-(const Complex &b){
+            return Complex(real - b.real, image - b.image);
         }
-        complex operator*(const complex &b){
-            return complex(real * b.real - image * b.image, real * b.real + image * b.image);
+        Complex operator*(const Complex &b){
+            return Complex(real * b.real - image * b.image, real * b.image + image * b.real);
         }
-        complex operator/(const complex &b){
-            //return (*this) * b.inverse(); 
-            complex inversed_b = b.inverse();
-            return complex(real * inversed_b.real - image * inversed_b.image, real * inversed_b.image + image * inversed_b.real);
+        Complex operator/(const Complex &b){
+            Complex inversed_b = b.inverse();
+            return this->Complex::operator*(inversed_b);
+            //return Complex(real * inversed_b.real - image * inversed_b.image, real * inversed_b.image + image * inversed_b.real);
         }
-        T getreal(){
+        T getreal() const{
             return real;
         }
-        T getimage(){
+        T getimage() const{
             return image;
+        }
+        friend ostream& operator<<(ostream &os, const Complex &b){
+            if (b.getimage() >= T(0.))
+                os << b.getreal() << "+" << b.getimage() << "i";
+            else
+                os << b.getreal() << "-" << -b.getimage() << "i";
+            return os;
         }
 };
 
-template <class T>
-ostream& operator<<(ostream &os, complex<T> &b){
-    if (b.getimage() >= T(0.))
-        os << b.getreal() << "+" << b.getimage() << "i";
-    else
-        os << b.getreal() << "-" << -b.getimage() << "i";
-    return os;
-}
-
 int main(){
-    complex<double> ac(1.3, 0.5), bc(2., 0.);
+    Complex<double> ac(1.3, 0.5), bc(2., 0.);
     cout << ac << endl << bc << endl;
-    complex<double> sum = ac + bc;
+    Complex<double> sum = ac + bc;
     cout << sum << endl;
-    complex<double> divided = ac / bc;
+    Complex<double> divided = ac / bc;
     cout << divided << endl;
-    //wrong syntax
-    //cout << ac + bc << " " << ac - bc << " " << ac * bc << " " << ac / bc << endl;
+    cout << ac + bc << " " << ac - bc << " " << ac * bc << " " << ac / bc << endl;
     return 0;
 }
