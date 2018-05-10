@@ -29,7 +29,8 @@ class Complex{
         }
         Complex operator/(const Complex &b){
             Complex inversed_b = b.inverse();
-            return this->Complex::operator*(inversed_b);
+            return this->operator*(inversed_b);
+            //return this->Complex::operator*(inversed_b);
             //return Complex(real * inversed_b.real - image * inversed_b.image, real * inversed_b.image + image * inversed_b.real);
         }
         T getreal() const{
