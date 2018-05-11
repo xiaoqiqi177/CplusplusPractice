@@ -162,7 +162,10 @@ shared_ptr<Expression> Expression::parse_(string expression){
             else if (expression[i] == '(')
                 left_cnt += 1;
         }
-        return parse_(parse_(expression.substr(1,i-1)), expression.substr(i+1));
+        if (i == expression.size()-1)
+            return parse_(expression.substr(1, i-1));
+        else
+            return parse_(parse_(expression.substr(1,i-1)), expression.substr(i+1));
     }
     while (i < expression.size() && isoperator(expression[i]) == false)
         i += 1;
@@ -204,5 +207,20 @@ int main(){
     cout << "second reduce!" << endl;
     double result2 = reduce2->eval();
     cout << result2 << endl;
+    
+    //more test
+    shared_ptr<Expression> exp3 = Expression::parse_("2");
+    double result3 = exp3->eval();
+    cout << result3 << endl;  
+    
+    shared_ptr<Expression> exp4 = Expression::parse_("(((2)))");
+    double result4 = exp4->eval();
+    cout << result4 << endl;
+    
+    shared_ptr<Expression> exp5 = Expression::parse_("(((a)))");
+    shared_ptr<Evaluation> eval3 = Evaluation::parse_("a=2;");
+    shared_ptr<Expression> reduce5 = exp5->reduce_(*eval3.get());
+    double result5 = reduce5->eval();
+    cout << result5 << endl;
     return 0;
 }
